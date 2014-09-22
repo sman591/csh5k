@@ -2415,7 +2415,7 @@ output {
 }
 @media (max-width: 767px){
 .form-control{
-	width:50%;
+	width:60%;
 	font-size:1em;
 }
 	
@@ -2928,10 +2928,33 @@ fieldset[disabled] .btn-primary.active {
   border:none;
   -webkit-appearance:none;	
 }
+.btn-billing {
+   margin-top: 20px;
+  -webkit-border-radius: 8;
+  -moz-border-radius: 8;
+  border-radius: 8px;
+  font-family: Arial;
+  color: #ffffff;
+  font-size: 1.5em;
+  background: #FFA319;
+  padding: 20px 0px 20px 0px;
+  text-decoration: none;
+  border:none;
+  -webkit-appearance:none;
+  width:200px;
+  margin-left:5px;
+  margin-right:5px;	
+}
 @media (max-width: 767px){
 	.btn-prereg{
 		font-size: 1em;
 		padding: 10px 20px 10px 20px;
+		
+	}
+	.btn-billing{
+		font-size: 1em;
+		padding: 10px 0px 10px 0px;
+		width:100px
 		
 	}
 }
@@ -6321,6 +6344,23 @@ button.close {
 @media (max-width:767px){
 .map{
   height:300px;	
+}
+}
+.charity-logo{
+	height:250px;
+  background-size: 100%;
+  background-size: cover;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+  background-size: cover;
+  background: url(images/charitywater.png) no-repeat center center;
+  	
+}
+@media only screen and (max-width: 767px){
+.charity-logo{
+  background: url(images/charitywatersmall.png) no-repeat center center;
+  	
 }
 }
 /*# sourceMappingURL=bootstrap.css.map */
