@@ -48,21 +48,32 @@
     </div><!-- /.navbar-collapse -->
   </div><!-- /.container-fluid -->
 </nav>
-	  <a name="home"></a>
-      <div class="jumbotron" style=" padding-top:15%;">
-       <h1>Just a Few More Steps!</h1>
+    <div class="jumbotron" style="padding-top: 15%;" id="register">
+     <h1>Just a Few More Steps!</h1>
+      <form action="/charge" method="post">
         <p class="lead">I would like to pay with:</p>
-        <p><a class="cust-btn btn-billing" href="#" role="button" style="text-transform: none; text-decoration:none; color:#FFF;">Cash</a>
-        <a class="cust-btn btn-billing" href="#credit" role="button" style="text-transform: none; text-decoration:none; color:#FFF;">Credit</a></p>
+        <p class="checkout-buttons">
+          <button class="cust-btn btn-billing" data-checkout="cash"   role="button" style="text-transform: none; text-decoration:none; color:#FFF;">Cash</button>
+          <button class="cust-btn btn-billing" data-checkout="credit" role="button" style="text-transform: none; text-decoration:none; color:#FFF;">Credit</button>
+        </p>
+        <input type="hidden" name="amount" value="1000"
+      </form>
+      <div id="flash-message" class="alert col-xs-8 col-xs-offset-2" style="display: none"></div>
+    </div>
+    <div class="jumbotron" style="padding-top: 15%; display: none" id="complete">
+      <h1>Thank You!</h1>
+      <br>
+      <div class="alert alert-success col-xs-8 col-xs-offset-2">
+        <p>You have successfully registered for the run.<br>Can't wait to see you there!</p>
+        <p id="cash-reminder" style="display: none"><i>Please remember to bring $10 to the race.</i></p>
       </div>
-<a name="about"></a>
+    </div>
 
       <div class="footer-custom">
         <p>&copy; CSH 2014. Designed by Brandon Hudson.</p>
       </div>
 
     </div> <!-- /container -->
-
 
     <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
     <!--[if lt IE 9]><script src="bootstrap/docs/assets/js/ie8-responsive-file-warning.js">	</script><![endif]-->
@@ -73,6 +84,86 @@
       src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAONriM-9QPPP8cqr1jEtF5Kua6qK-FdSM">
     </script>
     <script src="bootstrap/dist/js/core.js"></script>
+
+    <script src="https://checkout.stripe.com/checkout.js"></script>
+    <script>
+      (function () {
+
+        var price = $('form input[name="amount"]').val();
+
+        var flash = function(message, type) {
+          var element = $('#flash-message');
+
+          if (message === '') {
+            element.hide();
+            return;
+          }
+
+          element.removeClass(function(index, css) {
+              return (css.match (/(^|\s)alert-\S+/g) || []).join(' ');
+          });
+          element.addClass("alert-" + type);
+
+          element.html(message);
+          element.fadeIn(125);
+        };
+
+        var processPayment = function(type, token) {
+          $.post( "http://jsonplaceholder.typicode.com/posts", { type: type, amount: price, token: token.id })
+            .done(function() {
+              flash("", "");
+              $('#register').slideUp(500);
+              $('#complete').delay(10).slideDown(500);
+              if (type === "cash")
+                $("#cash-reminder").show();
+            })
+            .fail(function() {
+              setProcessing(false);
+              flash("Sorry, an error ocurred. Please try again.", "danger");
+            });
+        };
+
+        var setProcessing = function(status) {
+          $('.checkout-buttons button').attr('disabled', status);
+          if (status) {
+            $('.checkout-buttons').stop().fadeTo(100, 0.5);
+            flash("<i class='fa fa-circle-o-notch fa-spin'></i>&nbsp;&nbsp;Processing, please wait...", "info");
+          } else {
+            $('.checkout-buttons').stop().fadeTo(100, 1);
+            flash("", "");
+          }
+        };
+
+        var stripe = StripeCheckout.configure({
+          key: 'pk_test_iTRx0tT5GH6J3m7bYjny6tBM',
+          image: '/images/csh-stripe-checkout-logo.png',
+          token: function(token) {
+            processPayment("credit", token);
+          },
+          closed: function() {
+            $('.checkout-buttons button').attr('disabled', false);
+            $('.checkout-buttons').stop().fadeTo(100, 1);
+            flash("", "");
+          }
+        });
+
+        $('[data-checkout=credit]').on('click', function(e) {
+          setProcessing(true);
+          stripe.open({
+            name: 'CSH Costume 5K',
+            description: 'Registration ($' + price / 100 + '.00)',
+            amount: price
+          });
+          e.preventDefault();
+        });
+
+        $('[data-checkout=cash]').on('click', function(e) {
+          setProcessing(true);
+          processPayment("cash", {});
+          e.preventDefault();
+        });
+      })();
+    </script>
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
