@@ -1,5 +1,7 @@
 (function () {
 
+  $('form button[disabled]').prop('disabled', false);
+
   var price = $('form input[name="amount"]').val();
 
   var flash = function(message, type) {
@@ -58,7 +60,7 @@
     }
   });
 
-  $('[data-checkout=credit]').on('click', function(e) {
+  $('button[name=type][value=credit]').on('click', function(e) {
     setProcessing(true);
     stripe.open({
       name: 'CSH Costume 5K',
@@ -68,7 +70,7 @@
     e.preventDefault();
   });
 
-  $('[data-checkout=cash]').on('click', function(e) {
+  $('button[name=type][value=cash]').on('click', function(e) {
     setProcessing(true);
     processPayment("cash", {});
     e.preventDefault();

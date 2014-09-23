@@ -50,12 +50,19 @@
       </nav>
     </div>
     <div class="jumbotron" style="padding-top: 15%;" id="register">
-     <h1>Just a Few More Steps!</h1>
+      <h1>Just a Few More Steps!</h1>
+      <noscript>
+        <div class="row">
+          <div class="alert alert-danger col-xs-6 col-xs-offset-3">
+            <p><i class="fa fa-exclamation-triangle"></i>&nbsp;&nbsp;JavaScript is required to pay with credit.</p>
+          </div>
+        </div>
+      </noscript>
       <form action="/charge" method="post">
         <p class="lead">I would like to pay with:</p>
         <p class="checkout-buttons">
-          <button class="cust-btn btn-billing" data-checkout="cash"   role="button" style="text-transform: none; text-decoration:none; color:#FFF;">Cash</button>
-          <button class="cust-btn btn-billing" data-checkout="credit" role="button" style="text-transform: none; text-decoration:none; color:#FFF;">Credit</button>
+          <button class="cust-btn btn-billing" type="submit" name="type" value="cash"   role="button" style="text-transform: none; text-decoration:none; color:#FFF;">Cash</button>
+          <button class="cust-btn btn-billing" type="submit" name="type" value="credit" role="button" style="text-transform: none; text-decoration:none; color:#FFF;" disabled="disabled">Credit</button>
         </p>
         <input type="hidden" name="amount" value="1000"
       </form>
